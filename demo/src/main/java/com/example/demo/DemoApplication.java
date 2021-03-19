@@ -64,7 +64,7 @@ public class DemoApplication {
 	@PostMapping("/message")
 	public ResponseEntity<Explainer> hello(@RequestParam(value = "who", defaultValue = "World") String name) throws InterruptedException {
 
-		launcher.sendMessage("Este es el mensaje");
+		launcher.sendMessage("Este es el mensaje 2");
 		return ResponseEntity.ok(new Explainer("Enviando mensaje a " + name));
 	}
 }
