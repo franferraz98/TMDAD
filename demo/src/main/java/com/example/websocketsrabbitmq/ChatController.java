@@ -17,7 +17,7 @@ public class ChatController {
     @MessageMapping("/chat")
     public OutputMessage send(final Message message) throws Exception {
         System.out.println("NAME: " + message.getFrom());
-        runner.run(message.getText());
+        runner.run(message.getFrom() + ":" + message.getText());
         final String time = new SimpleDateFormat("HH:mm").format(new Date());
         return new OutputMessage(message.getFrom(), message.getText(), time);
     }

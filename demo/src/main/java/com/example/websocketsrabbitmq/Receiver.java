@@ -28,8 +28,14 @@ public class Receiver {
 
     public void receiveMessage(String message) throws Exception {
         System.out.println("Received <" + message + ">");
+        String[] parts = message.split("-");
+        String from = parts[0];
+        String text = "";
+        for(int i = 1; i< parts.length; i++){
+            text += parts[i];
+        }
         final String time = new SimpleDateFormat("HH:mm").format(new Date());
         simpMessagingTemplate.convertAndSend("/topic/pushmessages",
-                new OutputMessage("Chuck Norris", message, time));
+                new OutputMessage(from, text, time));
     }
 }
