@@ -44,8 +44,8 @@ public class WSRabbitApplication {
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(Receiver2 receiver2) {
-        return new MessageListenerAdapter(receiver2, "receiveMessage");
+    MessageListenerAdapter listenerAdapter(Receiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
     public static void main(String[] args) throws InterruptedException{

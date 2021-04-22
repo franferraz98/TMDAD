@@ -4,13 +4,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Runner2 {
+public class Runner {
 
     private final RabbitTemplate rabbitTemplate;
-    private final Receiver2 receiver2;
+    private final Receiver receiver;
 
-    public Runner2(Receiver2 receiver2, RabbitTemplate rabbitTemplate) {
-        this.receiver2 = receiver2;
+    public Runner(Receiver receiver, RabbitTemplate rabbitTemplate) {
+        this.receiver = receiver;
         this.rabbitTemplate = rabbitTemplate;
     }
 
