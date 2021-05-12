@@ -21,11 +21,14 @@
     </div>
     <br />
     <div>
+        <input type="text" id="username" placeholder="Write your username..."/>
         <button id="connect" onclick="connect();">Connect</button>
         <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+        <button id="subscribe" disabled="disabled" onclick="subscribe();">Subscribe</button>
     </div>
     <br />
     <div id="conversationDiv">
+        <input type="text" id="destination" placeholder="Write your destination username..."/>
         <input type="text" id="text" placeholder="Write a message..."/>
         <button id="sendMessage" onclick="sendMessage();">Send</button>
         <p id="response"></p>

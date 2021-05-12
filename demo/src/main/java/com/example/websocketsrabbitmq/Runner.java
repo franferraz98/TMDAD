@@ -16,7 +16,10 @@ public class Runner {
 
     public void run(String message) throws Exception {
         System.out.println("Sending message: <" + message + ">");
-        rabbitTemplate.convertAndSend("spring-boot-exchange", "foo.bar.baz", message);
+        String[] parts = message.split(":::");
+        String destination = parts[parts.length - 1];
+        System.out.println("Destination: " + destination);
+        rabbitTemplate.convertAndSend("spring-boot-exchange", destination, message);
     }
 
 }
