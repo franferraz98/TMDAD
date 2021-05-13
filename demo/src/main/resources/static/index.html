@@ -27,6 +27,23 @@
         <button id="subscribe" disabled="disabled" onclick="subscribe();">Subscribe</button>
     </div>
     <br />
+    <div id="createRoomDiv">
+        <input type="text" id="chatRoom" placeholder="Add new chatroom name..."/>
+        <button id="createRoom" onclick="createRoom();">Create Room</button>
+    </div>
+    <br />
+    <div id="addToRoomDiv">
+        <input type="text" id="room" placeholder="Select room..."/>
+        <input type="text" id="userToRoom" placeholder="Add a user to room..."/>
+        <button id="addToRoom" onclick="addToRoom();">Add to Room</button>
+    </div>
+    <br />
+    <div id="converRoomDiv">
+        <input type="text" id="destRoom" placeholder="Write your destination room..."/>
+        <input type="text" id="textRoom" placeholder="Write a message..."/>
+        <button id="sendToRoom" onclick="sendToRoom();">Send</button>
+    </div>
+    <br />
     <div id="conversationDiv">
         <input type="text" id="destination" placeholder="Write your destination username..."/>
         <input type="text" id="text" placeholder="Write a message..."/>

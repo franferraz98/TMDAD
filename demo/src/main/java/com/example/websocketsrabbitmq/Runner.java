@@ -17,9 +17,17 @@ public class Runner {
     public void run(String message) throws Exception {
         System.out.println("Sending message: <" + message + ">");
         String[] parts = message.split(":::");
-        String destination = parts[parts.length - 1];
+        String destination = "foo.bar." + parts[parts.length - 1];
         System.out.println("Destination: " + destination);
         rabbitTemplate.convertAndSend("spring-boot-exchange", destination, message);
+    }
+
+    public void toChatRoom(String message) throws Exception {
+        System.out.println("Sending message: <" + message + "> to a room");
+        String[] parts = message.split(":::");
+        String exchange = parts[parts.length - 1];
+        System.out.println("Destination: " + exchange);
+        rabbitTemplate.convertAndSend(exchange, "", message);
     }
 
 }

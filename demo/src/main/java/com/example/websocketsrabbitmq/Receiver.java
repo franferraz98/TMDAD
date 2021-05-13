@@ -1,62 +1,86 @@
 package com.example.websocketsrabbitmq;
 
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import com.rabbitmq.client.AMQP;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.util.HtmlUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Controller
 public class Receiver {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private List<String> allQueueNames;
 
     @Autowired
     private TopicExchange exchange;
 
     @Autowired
-    private Queue queue;
-
-    @Autowired
     private RabbitAdmin rabbitAdmin;
 
     @Autowired
-    private ConnectionFactory connectionFactory;
+    private SimpleMessageListenerContainer listenerContainer;
 
     public Receiver(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.allQueueNames = new ArrayList<String>();
+    }
 
+    @MessageMapping("/addToRoom")
+    public void addToRoom (final Message message){
+        String text = message.getText();
+        System.out.println(text);
+        String[] parts = text.split(":::");
+        String room = parts[0];
+        String user = parts[1];
+
+        Queue queue = new Queue(user, true);
+        FanoutExchange exchange = new FanoutExchange(room);
+        Binding binding = BindingBuilder.bind(queue).to(exchange);
+
+        rabbitAdmin.declareBinding(binding);
+
+        System.out.println("No destruyo todo");
+    }
+
+    @MessageMapping("/createRoom")
+    public void createChatRoom (final Message message){
+        String queueName = message.getFrom();
+        String exchangeName = message.getText();
+
+        FanoutExchange exchange = new FanoutExchange(exchangeName);
+        Queue queue = new Queue(queueName, true);
+        Binding binding = BindingBuilder.bind(queue).to(exchange); //TODO: No se yo
+
+        // rabbitAdmin.declareExchange(exchange);
+        // rabbitAdmin.declareQueue(queue);
+        rabbitAdmin.declareBinding(binding);
     }
 
     @MessageMapping("/route")
     public void newBind (final Message message) {
-        System.out.println("BINDEANDO: " + message.getText());
-        String keyMask = message.getText();
+        String queueName = message.getText();
+        allQueueNames.add(queueName);
+        String keyMask = "foo.bar." + message.getText();
+        org.springframework.amqp.core.Queue queue = new org.springframework.amqp.core.Queue(queueName, true);
         Binding bind = BindingBuilder.bind(queue).to(exchange).with(keyMask);
+        rabbitAdmin.declareQueue(queue);
         rabbitAdmin.declareBinding(bind);
+
         RabbitTemplate rabbitTemplate = rabbitAdmin.getRabbitTemplate();
         while(rabbitAdmin.getQueueInfo(queue.getName()).getMessageCount() > 0){
             String result = (String) rabbitTemplate.receiveAndConvert(queue.getName());
@@ -65,8 +89,10 @@ public class Receiver {
             } catch (Exception e){
                 System.out.println("ERROR: " + e);
             }
-
         }
+
+        String[] namesArray = allQueueNames.toArray(new String[0]);
+        listenerContainer.setQueueNames(namesArray);
     }
 
     public void receiveMessage(String message) throws Exception {

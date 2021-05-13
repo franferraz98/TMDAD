@@ -22,4 +22,12 @@ public class ChatController {
         return new OutputMessage(message.getFrom(), message.getText(), time);
     }
 
+    @MessageMapping("/chatRoom")
+    public OutputMessage outputMessage(final Message message) throws Exception{
+        System.out.println("Received: " + message.getFrom() + " -> " + message.getText());
+        runner.toChatRoom(message.getFrom() + ":::" + message.getText());
+        final String time = new SimpleDateFormat("HH:mm").format(new Date());
+        return new OutputMessage(message.getFrom(), message.getText(), time);
+    }
+
 }
