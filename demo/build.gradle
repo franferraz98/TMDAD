@@ -10,10 +10,12 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	google()
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'android.arch.persistence.room:runtime:1.1.1'
 	compile 'org.springframework.boot:spring-boot-starter-web:2.4.3'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
@@ -27,6 +29,10 @@ dependencies {
 	implementation 'com.github.javafaker:javafaker:0.16'
 	implementation 'com.google.code.gson:gson:2.8.6'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
+	runtimeOnly 'com.h2database:h2'
 }
 
 test {
